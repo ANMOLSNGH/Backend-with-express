@@ -9,7 +9,13 @@ app.use("/test",(req,res)=>{
 
 app.use("/test2",(req,res)=>{
     res.send("Hello from the server 2!");
-});
+    console("It is working ") ;
+},    (res,req) => {
+      console.log("New stuff bro");
+      res.send("New thing bro")
+}
+
+);
 
 app.use("/test3",(req,res)=>{
     res.send("Hello from the server 3!");
