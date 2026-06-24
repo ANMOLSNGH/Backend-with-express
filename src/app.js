@@ -1,17 +1,47 @@
 import express from 'express'
-import { adminauth } from '../middleware/auth.js';
+import { adminauth } from './middleware/auth.js';
+import { userauth } from './middleware/useraut.js';
 const app = express()
 
 const PORT = 3000
 
-app.use("/admin", adminauth );
+app.use("/admin", adminauth);
 
-app.get("/admin/getAllData",(req,res) => {
-     res.send("After getting authorised");
+
+
+
+app.get("/getuserdata", (req, res) => {
+
+  throw new Error("Invalid");
+  res.send("Request");
+  // catch (error) {
+  //   console.log("Error");
+  //   res.send("error");
+  // }
 });
 
-app.use("/test",(req,res)=>{
-    res.send("Hello from the server !");
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Invalid response correct it !");
+  }
+});
+
+
+app.get("/user/data", userauth, (req, res) => {
+  res.send("User data sent!");
+});
+
+app.get("/user/login", (req, res) => {
+  res.send("User can login!");
+});
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("After getting authorised");
+});
+
+
+app.use("/test", (req, res) => {
+  res.send("Hello from the server !");
 });
 
 app.use("/test2",
@@ -26,14 +56,14 @@ app.use("/test2",
   (req, res) => {
     res.send("New thing bro 2");
   }
-]);
+  ]);
 
-app.use("/test3",(req,res)=>{
-    res.send("Hello from the server 3!");
-}); 
+app.use("/test3", (req, res) => {
+  res.send("Hello from the server 3!");
+});
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the homepage!");
+  res.send("Welcome to the homepage!");
 });
 
 app.listen(PORT, () => {
