@@ -1,15 +1,10 @@
 import express from 'express'
+import { adminauth } from '../middleware/auth.js';
 const app = express()
 
 const PORT = 3000
 
-app.use("/admin",(req,res,next) => {
-     const token = "1234";
-     const isAdministrative = token === "1234";
-     console.log("Checking token matching");
-     if(!isAdministrative) res.status(401).send("Unauthorised status");
-     else next();
-});
+app.use("/admin", adminauth );
 
 app.get("/admin/getAllData",(req,res) => {
      res.send("After getting authorised");
