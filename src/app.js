@@ -19,6 +19,19 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.patch("/update", async (req, res) => {
+  try {
+    const { userid, ...data } = req.body;  // separate userid from fields to update
+    const user = await User.findByIdAndUpdate(userid, { $set: data }, { new: true });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send(user);
+  } catch (err) {
+    res.status(500).send("Error: " + err.message);
+  }
+});
+
 app.get("/users", async (req, res) => {
   try {
     const emailId = req.body.emailid;
