@@ -34,6 +34,21 @@ app.get("/users", async (req, res) => {
   }
 })
 
+app.get("/feed", async (req, res) => {
+  try {
+    const user = await User.find({});
+    if (user.length === 0) {
+      res.send("User not found");
+    }
+    else {
+      res.send(user);
+    }
+  }
+  catch (err) {
+    res.status(500).send("Error: " + err.message);
+  }
+})
+
 const PORT = "3000";
 connectDB()
   .then(() => {
