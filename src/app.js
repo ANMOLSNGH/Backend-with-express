@@ -3,6 +3,7 @@ import { adminauth } from './middleware/auth.js';
 import { userauth } from './middleware/useraut.js';
 import connectDB from "./config/database.js";
 import User from "./models/user.js";
+import validator from "validator";
 
 const app = express()
 
@@ -19,10 +20,20 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.patch("/update", async (req, res) => {
+app.patch("/update/:userid", async (req, res) => {
+  const userid = req.params?.userid;
+
   try {
-    const { userid, ...data } = req.body;  // separate userid from fields to update
-    const user = await User.findByIdAndUpdate(userid, { $set: data }, { new: true });
+    const allowedUser = ["userid", "firstname", "lastname", "emailid", "password", "mobile"];
+    const isupdateallowed = Object.keys(req.body).every((k) => allowedUser.includes(k));
+    if (!isupdateallowed) {
+      throw new Error("Invalid, update not allowed");
+    }
+    const data = req.body;  // userid comes from req.params, not body
+    const user = await User.findByIdAndUpdate(userid, { $set: data }, {
+      new: true,
+      runValidators: true,
+    });
     if (!user) {
       return res.status(404).send("User not found");
     }
