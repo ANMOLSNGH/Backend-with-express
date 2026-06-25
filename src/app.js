@@ -6,21 +6,33 @@ import User from "./models/user.js";
 
 const app = express()
 
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
   try {
-    const user = new User({
-      firstname: "Anmol",
-      lastname: "Rana",
-      emailid: "anmolsingh95@gmail.com",
-      password: "asingh",
-      mobile: 8433142504
-    });
+    console.log(req.body);
+    const user = new User(req.body);
     await user.save();
     res.send("User created successfully");
   } catch (err) {
     res.status(500).send("Error: " + err.message);
   }
 });
+
+app.get("/users", async (req, res) => {
+  try {
+    const emailId = req.body.emailid;
+    const finds = await User.find({ emailid: emailId });
+    if (finds.length === 0) {
+      res.send("User not found");
+    }
+    else {
+      res.send(finds);
+    }
+  } catch (err) {
+    res.status(500).send("Error: " + err.message);
+  }
+})
 
 const PORT = "3000";
 connectDB()
